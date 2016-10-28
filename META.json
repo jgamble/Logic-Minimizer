@@ -1,0 +1,61 @@
+{
+   "abstract" : "Parent class for Logic minimizers like Quine-McCluskey",
+   "author" : [
+      "John M. Gamble <jgamble@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Module::Build version 0.4218",
+   "keywords" : [
+      "boolean",
+      "boolean-algebra",
+      "logic",
+      "truth-tables"
+   ],
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Logic-Minimizer",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "List::MoreUtils" : "0.401",
+            "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "0",
+            "List::MoreUtils" : "0.401",
+            "Moose" : "2.16",
+            "namespace::autoclean" : "0.16",
+            "perl" : "v5.10.1"
+         }
+      }
+   },
+   "provides" : {
+      "Logic::Minimizer" : {
+         "file" : "lib/Logic/Minimizer.pm",
+         "version" : "1.00"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "git://github.com/jgamble/Logic-Minimizer"
+      }
+   },
+   "version" : "1.00",
+   "x_serialization_backend" : "JSON::PP version 2.27300"
+}
