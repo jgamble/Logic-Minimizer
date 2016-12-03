@@ -21,11 +21,11 @@ my $builder = Module::Build->new(
 		perl => '5.10.1',
 		Moose => '2.16',
 		Carp => 0,
-		'List::MoreUtils' => '0.401',
+		'List::Compare::Functional' => '0.53',
 		'namespace::autoclean' => '0.16',
 	},
 	configure_requires => {
-		'Module::Build' => 0,
+		'Module::Build' => '0.4',
 		'List::MoreUtils' => '0.401',
 	},
 	build_requires => {

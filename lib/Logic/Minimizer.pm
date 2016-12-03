@@ -2,10 +2,12 @@ package Logic::Minimizer;
 
 use 5.010001;
 
-use Carp qw(croak);
-
 use Moose;
 use namespace::autoclean;
+
+use Carp qw(croak);
+
+use List::Compare::Functional qw(get_intersection);
 
 
 #
@@ -156,8 +158,15 @@ sub catch_errors
 	# Make sure we have enough variable names.
 	#
 	croak "Not enough variable names for your width" if (scalar @{$self->vars} < $w);
+
+	return 1;
 }
 
+#
+# minmax_bit_terms()
+#
+# Return the list of terms in bit format; either minterms or maxterms.
+#
 sub minmax_bit_terms
 {
 	my $self = shift;
@@ -224,6 +233,10 @@ sub break_columnstring
 	return (\@minterms, \@maxterms, \@dontcares);
 }
 
+#
+# Get the algorithm name from the algorithm package name, suitable for
+# using in the 'algorithm' parameter of Logic::TruthTable->new().
+#
 sub extract_algorithm
 {
 	my $self = shift;
@@ -253,15 +266,17 @@ our $VERSION = '1.00';
 =head1 SYNOPSIS
 
 This is the base class for logic minimizers that are used by
-L<Logic::TruthTable>. You do not need to use this class unless
-you are creating a logic minimizer package.
+L<Logic::TruthTable>. You do not need to use this class (or
+indeed read any further) unless you are creating a logic
+minimizer package.
 
     package Algorithm::SomethingNiftyLikeEspresso;
     extends 'Logic::Minimizer';
 
-(C<Logic::TruthTable> requires the minimizer class to use the Algorithm top level domain)
+(C<Logic::TruthTable> requires the Algorithm::SomethingNiftyLikeEspresso
+to use Logic::Minimizer as its base class.)
 
-Then, either use it directly in your program:
+Then, either use the package directly in your program:
 
     my $fn = Algorithm::SomethingNiftyLikeEspresso->new(
         width => 4,

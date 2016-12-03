@@ -1,7 +1,9 @@
-Logic-Minimizer version 1.0
+Logic-Minimizer version 1.0, 2 December 2016
 
-Provides a parent class for modules that minimize boolean equations, such
-as Algorithm::QuineMcCluskey.
+Provides a parent class for modules that minimize boolean equations,
+such as Algorithm::QuineMcCluskey. You do not need to bother with this
+module or even read its documentation unless you need to create a new
+minimizer module for use by Logic::TruthTable.
 
 
 INSTALLATION
@@ -9,9 +11,9 @@ INSTALLATION
 To install this module, run the following commands:
 
 	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+	Build
+	Build test
+	Build install
 
 SUPPORT AND DOCUMENTATION
 
@@ -43,5 +45,5 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
-See L<http://dev.perl.org/licenses/> for more information.
+See http://dev.perl.org/licenses/ for more information.
 

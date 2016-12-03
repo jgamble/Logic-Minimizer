@@ -1,6 +1,6 @@
 Revision history for Logic-Minimizer
 
-1.00    28 Oct 2016
-        - First version, used as a base class for verion 1.00
+1.00    2 Dec 2016
+	- First version, used as a base class for verion 1.00
 	  of Algorithm-QuineMcCluskey
 
