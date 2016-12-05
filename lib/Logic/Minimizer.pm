@@ -10,6 +10,9 @@ use Carp qw(croak);
 use List::Compare::Functional qw(get_intersection);
 
 
+our $VERSION = '1.00';
+
+
 #
 # Required attributes to create the object.
 #
@@ -65,7 +68,7 @@ has 'algorithm' => (
 # the equation) is a "lazy" attribute and is calculated when asked
 # for in code or by the user.
 #
-has 'covers'	=> (
+has 'covers' => (
 	isa => 'ArrayRef[ArrayRef[Str]]', is => 'ro', required => 0,
 	init_arg => undef,
 	reader => 'get_covers',
@@ -254,14 +257,7 @@ sub extract_algorithm
 
 Logic::Minimizer - The parent class of boolean minimizers.
 
-=head1 VERSION
-
-Version 1.00
-
 =cut
-
-our $VERSION = '1.00';
-
 
 =head1 SYNOPSIS
 
@@ -274,14 +270,14 @@ minimizer package.
     extends 'Logic::Minimizer';
 
 (C<Logic::TruthTable> requires the Algorithm::SomethingNiftyLikeEspresso
-to use Logic::Minimizer as its base class.)
+to have Logic::Minimizer as its base class.)
 
 Then, either use the package directly in your program:
 
     my $fn = Algorithm::SomethingNiftyLikeEspresso->new(
         width => 4,
         minterms => [1, 8, 9, 14, 15],
-	dontcares => [2, 3, 11, 12]
+        dontcares => [2, 3, 11, 12]
     );
     ...
 
@@ -293,11 +289,11 @@ or as a algorithm choice in C<Logic::TruthTable>:
         columns => [
             {
                 minterms => [1, 8, 9, 14, 15],
-	        dontcares => [2, 3, 11, 12],
+                dontcares => [2, 3, 11, 12],
             }
             {
-	        minterms => [4, 5, 6, 10, 13],
-	        dontcares => [2, 3, 11, 12],
+                minterms => [4, 5, 6, 10, 13],
+                dontcares => [2, 3, 11, 12],
             }
         ],
     );
