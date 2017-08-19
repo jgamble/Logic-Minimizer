@@ -161,7 +161,7 @@ sub catch_errors
 	#
 	croak "'width' must be at least 1" if ($w < 1);
 
-	my $last_idx = (1 << $w) - 1;
+	my $wp2 = 1 << $w;
 
 	if ($self->has_columnstring or $self->has_columnlist)
 	{
@@ -170,9 +170,9 @@ sub catch_errors
 		croak "Use only one of the columnstring or columnlist attributes"
 			if ($self->has_columnstring and $self->has_columnlist);
 
-		my $cl = $last_idx + 1 - ($self->has_columnstring)?
-						length $self->columnstring:
-						$#{$self->columnlist};
+		my $cl = $wp2 - (($self->has_columnstring)?
+					length $self->columnstring:
+					$#{$self->columnlist});
 
 		if ($cl != 0)
 		{
@@ -225,7 +225,7 @@ sub catch_errors
 		#
 		# Can those terms be expressed in 'width' bits?
 		#
-		my @outside = grep {$_ > $last_idx or $_ < 0} @terms;
+		my @outside = grep {$_ >= $wp2 or $_ <= -1} @terms;
 
 		if (scalar @outside)
 		{
