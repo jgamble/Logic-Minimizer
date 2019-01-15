@@ -1,6 +1,6 @@
 package Logic::Minimizer;
 
-use 5.010001;
+use 5.016001;
 
 use Moose;
 use namespace::autoclean;

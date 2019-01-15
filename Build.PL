@@ -18,7 +18,7 @@ my $builder = Module::Build->new(
 	},
 
 	requires => {
-		perl => '5.10.1',
+		perl => '5.16.1',
 		Moose => '2.16',
 		Carp => 0,
 		'List::Compare::Functional' => '0.53',
