@@ -18,15 +18,14 @@ my $builder = Module::Build->new(
 	},
 
 	requires => {
-		perl => '5.10.1',
+		perl => '5.16.1',
 		Moose => '2.16',
 		Carp => 0,
 		'List::Compare::Functional' => '0.53',
 		'namespace::autoclean' => '0.16',
 	},
 	configure_requires => {
-		'Module::Build' => '0.4',
-		'List::MoreUtils' => '0.401',
+		'Module::Build' => '0.4224',
 	},
 	build_requires => {
 		'Test::More' => 0,
@@ -37,7 +36,7 @@ my $builder = Module::Build->new(
 	create_readme => 0,
 	create_makefile_pl => 'traditional',
 	dynamic_config  => 0,
-	add_to_cleanup   => [ 'Logic-*' ],
+	add_to_cleanup   => [ 'Logic-Minimizer-*' ],
 
 	meta_merge => {
 		keywords => [qw(boolean boolean-algebra logic truth-tables)],
