@@ -9,7 +9,6 @@ use Carp;
 
 use List::Compare::Functional qw(get_intersection);
 
-
 our $VERSION = '1.00';
 
 
@@ -134,6 +133,52 @@ has 'covers' => (
 	clearer => 'clear_covers',
 	lazy => 1,
 	builder => 'generate_covers',
+);
+
+#
+# The print options.
+#
+has 'and_symbol' => (
+	isa => 'Str', is => 'rw',
+	reader => 'get_and_symbol',
+	writer => 'set_and_symbol',
+	default => ''
+);
+
+has 'or_symbol' => (
+	isa => 'Str', is => 'rw',
+	reader => 'get_or_symbol',
+	writer => 'set_or_symbol',
+	default => ' + '
+);
+
+has 'group_symbols' => (
+	isa => 'ArrayRef[Str]', is => 'rw',
+	reader => 'get_group_symbols',
+	writer => 'set_group_symbols',
+	default => sub{['(', ')']}
+);
+
+has 'var_formats' => (
+	isa => 'ArrayRef[Str]', is => 'rw',
+	reader => 'get_var_formats',
+	writer => 'set_var_formats',
+	default => sub{["%s", "%s'"]}
+);
+
+#
+# Change behavior.
+#
+has 'order_by' => (
+	isa => 'Str', is => 'rw',
+	reader => 'get_order_by',
+	writer => 'set_order_by',
+	default => 'none',
+);
+
+has 'minonly' => (
+	isa => 'Bool', is => 'rw',
+	default => 1
 );
 
 #
@@ -333,6 +378,80 @@ sub extract_algorithm
 	return $al;
 }
 
+sub to_boolean
+{
+	my $self = shift;
+	my($cref) = @_;
+	my $is_sop = $self->has_min_bits;
+	my $w = $self->width;
+
+	#
+	# Group separators, and the group joiner string (set according
+	# to whether this is a sum-of-products or product-of-sums).
+	#
+	my($gsb, $gse) = @{$self->get_group_symbols()};
+	my $gj = $is_sop ? $self->get_or_symbol() : $self->get_and_symbol();
+
+	my @covers = @$cref;
+
+	#
+	# Check for the special case where the covers are reduced to
+	# a single expression of nothing but dc characters
+	# (e.g., "----"). This happens when all of the terms are
+	# covered, resulting in an equation that would be simply
+	# "(1)" (or "(0)" if using maxterms). Since the normal
+	# translation will return "()", this has to checked.
+	#
+	if ($#covers == 0)
+	{
+		if ($covers[0] =~ /[^01]{$w}/)
+		{
+			return $gsb . (($is_sop)? "1": "0") . $gse;
+		}
+		else
+		{
+			return $gsb . $self->to_boolean_term($covers[0], $is_sop) . $gse;
+		}
+	}
+
+	@covers = sort @covers if ($self->get_order_by eq 'covers');
+
+	my @exprns = map {$gsb . $self->to_boolean_term($_, $is_sop) . $gse} @covers;
+	@exprns = sort @exprns if ($self->get_order_by eq 'vars');
+
+	return join $gj, @exprns;
+}
+
+#
+# Convert an individual term or prime implicant to a boolean variable string.
+#
+sub to_boolean_term
+{
+	my $self = shift;
+	my($term, $is_sop) = @_;
+
+	#
+	# The variable and complemented variable formats.
+	#
+	my($vf, $nvf) = @{$self->get_var_formats()};
+
+	#
+	# Element joiner and match condition
+	#
+	my($ej, $cond) =
+		$is_sop ? ($self->get_and_symbol(), 1):
+			($self->get_or_symbol(), 0);
+
+	my @trits = split //, $term;
+	my @indices = grep{$trits[$_] ne $self->dc} (0 .. $#trits);
+
+	my @vars = @{$self->vars};
+
+	return join $ej, map {
+		sprintf(($trits[$_] == $cond ? $vf: $nvf), $vars[$_])
+	} @indices;
+}
+
 =head1 NAME
 
 Logic::Minimizer - The parent class of Boolean minimizers.
@@ -378,7 +497,7 @@ or as a algorithm choice in C<Logic::TruthTable>:
     );
 
 This class provides the attributes and some of the methods for your
-miniizer class.
+minimizer class.
 
 =head3 Minimizer Attributes
 
@@ -421,7 +540,7 @@ output is in sum-of-product form.
 
 =back
 
-Some common sense rule apply. If 'columnstring' or 'columnlist' is
+Some common sense rules apply. If 'columnstring' or 'columnlist' is
 provided, 'minterms', 'maxterms', and 'dontcares' can't be used.
 
 Likewise, 'minterms' and 'maxterms' can not be used together, and
@@ -448,7 +567,7 @@ Defaults to the character '-'.
 =item 'vars'
 
 The variable names used to output the Boolean equation. By default,
-uses 'A' to 'Z'. The names to not have to be single characters, e.g.:
+uses 'A' to 'Z'. The names do not have to be single characters, e.g.:
 C<vars => ['a1', 'a0', 'b1', 'b0']>
 
 =back
@@ -456,8 +575,8 @@ C<vars => ['a1', 'a0', 'b1', 'b0']>
 The attributes that are set during the minimizing process.
 
 These are all "lazy" attributes, and calculated when asked
-for in code or by the user. All are created via builder
-functions that are provided by the child class.
+for in code or by the user. All are created by builder
+functions that the child class needs to provide.
 
 =over 4
 
@@ -491,7 +610,9 @@ then 'algorithm' would be set to 'QuineMcCluskey'.
 
 =head3 Minimizer Methods
 
-These are the methods needed for error checking, or to read from or write to the attributes.
+These are the methods needed for error checking, or to read from or
+write to the attributes.
+
 Some are provided by C<Logic::Minimizer>, while others (the builder
 methods of the attributes 'primes', 'covers', and 'essentials') are
 merely method definitions, and are expected to be provided by the
@@ -499,11 +620,11 @@ child class.
 
 =over 4
 
-=item to_columnstring()
+=item to_columnstring
 
 Provided by this module. Converts the column into a single string.
 
-=item to_columnlist()
+=item to_columnlist
 
 Provided by this module. Converts the column into an array reference.
 
@@ -513,11 +634,20 @@ Provided by this module. Finds basic errors such as empty term arrays,
 insufficient variables for the width, terms that don't fit within the
 table size, and so forth.
 
-=item generate_primes()
+=item to_boolean
 
-=item generate_covers()
+Provided by this module. Converts a set of covers to a boolean equation.
 
-=item generate_essentials()
+=item to_boolean_term
+
+Provided by this module. Converts a cover term into a boolean expression.
+Called by C<to_boolean()>.
+
+=item generate_primes
+
+=item generate_covers
+
+=item generate_essentials
 
 The primes, covers, and essentials attributes need methods to create
 those attributes. The child module of C<Logic::Minimizer> should provide these.
