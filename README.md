@@ -25,21 +25,17 @@ perl Build.PL
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Logic::Minimizer
+```sh
+perldoc Logic::Minimizer
+```
 
 You can also look for information at:
 
-    RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Logic-Minimizer
+[The module's Github repository](https://github.com/jgamble/Logic-Minimizer)
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Logic-Minimizer
+[RT, CPAN's request tracker (report bugs here)] (http://rt.cpan.org/NoAuth/Bugs.html?Dist=Logic-Minimizer)
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Logic-Minimizer
-
-    Search CPAN
-        http://search.cpan.org/dist/Logic-Minimizer
+[MetaCPAN] (https://metacpan.org/release/Logic-Minimizer)
 
 
 ## LICENSE AND COPYRIGHT
@@ -50,5 +46,5 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
-See http://dev.perl.org/licenses/ for more information.
+See [the list of licencses](http://dev.perl.org/licenses) for more information.
 
